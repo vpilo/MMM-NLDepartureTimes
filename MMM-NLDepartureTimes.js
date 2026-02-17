@@ -1,143 +1,153 @@
+
 Module.register("MMM-NLDepartureTimes", {
-  
+
   statusDom: undefined,
   timeTableList: Object,
   error: undefined,
-  
-  defaults: {
-		updateSpeed: 10,
-		maxVehics: 5
-  },
-	
-	getScripts: function() {
-		return ['moment.js'];
-	},
 
-  start: function(){
-    Log.info(`Sarting module ${this.name}`);
+  defaults: {
+    updateSpeed: 10,
+    maxVehicles: 5,
+    source: "ovapi",
+  },
+
+  getScripts: function () {
+    return ['moment.js'];
+  },
+
+  start: function () {
+    Log.info(`Starting module ${this.name}`);
     this.statusDom = 'Loading';
     this.resume();
   },
-  
-  resume: function() {
+
+  resume: function () {
     var self = this;
-    setInterval(function() {
-      self.getTable();}, 
-      this.config.updateSpeed * 60000); //minute = 60 * 1000 ms.    
+    setInterval(function () {
+      self.getTable();
+    },
+      this.config.updateSpeed * 60_000);
   },
 
-  getTable: function() {
-    this.sendSocketNotification('REQ_TIMETABLE', this.config.tpc);
+  getTable: function () {
+    this.sendSocketNotification("REQUEST_TIMETABLE", this.config);
   },
-  
-  getStyles: function() {
+
+  getStyles: function () {
     return ["MMM-NLDepartureTimes.css"];
   },
-    
-  getDom: function(){
-    var self = this;
+
+  getDom: function () {
     let wrapper = document.createElement("div");
-		if(this.config.tpc === undefined){
-			this.statusDom = 'error';
-			this.error = 'No TPC in config. See READM.MD for details.';
-		}
-		if(this.statusDom === 'Loading'){
-      this.sendSocketNotification('REQ_TIMETABLE', this.config.tpc);
-      if(this.statusDom === 'Loading'){
+
+    switch (this.statusDom) {
+      case 'Loading':
+        this.sendSocketNotification("REQUEST_TIMETABLE", this.config);
         wrapper.innerHTML = "Loading...";
         return wrapper;
-      }
-    }
-    if(this.statusDom === 'error'){
-      wrapper.innerHTML = this.error;
-      console.log(this.error);
-      return wrapper;
-    }
-    if(this.statusDom === 'newTable'){
-      const table = document.createElement("table");
-      table.id = "timeTable";
-      for(const stopArea in this.timeTableList){
-      //Fetch the Stoparea.
-        let row = document.createElement("tr");
-        let lineHeader = document.createElement("th");
-        lineHeader.innerHTML = stopArea;
-        lineHeader.className = "bold";
-        lineHeader.colSpan = 3;
-        row.appendChild(lineHeader);
-        table.appendChild(row);
-        //Fetch direction
-        for(const direction in this.timeTableList[stopArea]){
+
+      case 'error':
+        Log.error(this.error);
+        wrapper.innerHTML = this.error;
+        return wrapper;
+
+      case 'newTable':
+        const table = document.createElement("table");
+        table.id = "timeTable";
+        const timeFormat = this.config.timeFormat === 24 ? "HH:mm" : "hh:mm A";
+        for (const stopArea in this.timeTableList) {
+          //Fetch the Stoparea.
           let row = document.createElement("tr");
-          let lineDirection = document.createElement("td");
-          lineDirection.innerHTML = direction;
-          lineDirection.colSpan = 3;
-          lineDirection.className = "small";
-          row.appendChild(lineDirection);
+          let lineHeader = document.createElement("th");
+          lineHeader.innerHTML = stopArea;
+          lineHeader.className = "bold";
+          lineHeader.colSpan = 3;
+          row.appendChild(lineHeader);
           table.appendChild(row);
-          //fetch vehciles
-          let vehicCounter = 0;
-          for(const vehicle of this.timeTableList[stopArea][direction]){
-            console.log(`C: ${vehicCounter} V: ${vehicle.DepTime} ${vehicle.LineName} ${direction}`);
-						vehicCounter++;
-            //Create time + delay
+          //Fetch direction
+          for (const direction in this.timeTableList[stopArea]) {
             let row = document.createElement("tr");
-            let vehicleTime = document.createElement("td");
-						if(config.timeFormat === 24){
-							vehicleTime.innerHTML = moment(vehicle.DepTime).format("HH:mm");
-						} else {
-							vehicleTime.innerHTML = moment(vehicle.DepTime).format("hh:mm A");
-						}
-						vehicleTime.className = "xsmall light vehicDepTime";
-            row.appendChild(vehicleTime);
-            
-            //Create line number + destination
-            let vehicleLine = document.createElement("td");
-            vehicleLine.innerHTML = vehicle.LineName;
-            vehicleLine.className = "xsmall light vehicLine";
-            row.appendChild(vehicleLine);
-            
-            let vehicleDestination = document.createElement("td");
-            vehicleDestination.innerHTML = vehicle.Destination;
-            vehicleDestination.className = "xsmall light vehicleDestination";
-            row.appendChild(vehicleDestination);
-            
+            let lineDirection = document.createElement("td");
+            lineDirection.innerHTML = direction;
+            lineDirection.colSpan = 3;
+            lineDirection.className = "small";
+            row.appendChild(lineDirection);
             table.appendChild(row);
-            if(vehicCounter === this.config.maxVehics){
-              break;
+
+            //fetch vehicles
+            let vehicleCount = 0;
+            for (const vehicle of this.timeTableList[stopArea][direction]) {
+              vehicleCount++;
+
+              //Create time + delay
+              let row = document.createElement("tr");
+              let vehicleTime = document.createElement("td");
+              vehicleTime.innerHTML = moment(vehicle.DepTime).format(timeFormat);
+              vehicleTime.className = "xsmall light vehicDepTime";
+              const delayMin = Number(vehicle.Delay);
+              if (isFinite(delayMin) && delayMin !== 0) {
+                const delaySpan = document.createElement("span");
+                delaySpan.className = delayMin > 0 ? "timeDelay" : "timeEarlier";
+                delaySpan.innerHTML = ` ${delayMin > 0 ? "+" : ""}${delayMin}m`;
+                vehicleTime.appendChild(delaySpan);
+              }
+              row.appendChild(vehicleTime);
+
+              //Create line number + destination
+              let vehicleLine = document.createElement("td");
+              vehicleLine.innerHTML = vehicle.LineName;
+              vehicleLine.className = "xsmall light vehicLine";
+              row.appendChild(vehicleLine);
+
+              let vehicleDestination = document.createElement("td");
+              vehicleDestination.innerHTML = vehicle.Destination;
+              vehicleDestination.className = "xsmall light vehicleDestination";
+              row.appendChild(vehicleDestination);
+
+              table.appendChild(row);
+
+              if (vehicle.Remarks && vehicle.Remarks.length > 0) {
+                let remarksRow = document.createElement("tr");
+                let remarkTd = document.createElement("td");
+                remarkTd.colSpan = 3;
+                remarkTd.innerHTML = `(${vehicle.Remarks})`;
+                remarkTd.className = "xxsmall light remarks";
+                remarksRow.appendChild(remarkTd);
+                table.appendChild(remarksRow);
+              }
+
+              if (vehicleCount === this.config.maxVehicles) {
+                break;
+              }
             }
           }
         }
-      }
-      wrapper.appendChild(table);
-      this.statusDom = 'Request'; //Not used in script. Nice for debugging.
-      return wrapper;
-    } 
+
+        wrapper.appendChild(table);
+        this.statusDom = 'Request'; //Not used in script. Nice for debugging.
+        return wrapper;
+    }
   },
 
-  socketNotificationReceived: function(notification, payload) {
-    if(notification === 'TTIMETABLE'){
-      this.statusDom = 'newTable';
-      this.timeTableList = payload;
-      this.updateDom(2000);
-      //this.printTimeTable(this.timeTableList);
-    }
-    if(notification === 'ERROR'){
-      this.statusDom = 'error';
-      Log.error(payload);
-      this.error = payload; 
-      this.updateDom(2000);
-    }
-  },
-  
-  printTimeTable: function(timeTableList){
-    for(const stopArea in timeTableList){
-      console.log(`${stopArea}`);
-      for(const direction in timeTableList[stopArea]){
-        console.log(` ${direction}`);
-        for(const vehicle of timeTableList[stopArea][direction]){
-          console.log(new Date(vehicle.DepTime).toLocaleTimeString('nl-NL') + ' ( ' + vehicle.Delay + ' ) : ' + vehicle.LineName + ' - ' + vehicle.Destination);  
-        }
-      }
+  socketNotificationReceived: function (notification, payload) {
+    switch (notification) {
+      case 'RESPONSE_TIMETABLE':
+        this.statusDom = 'newTable';
+        this.timeTableList = payload;
+        this.updateDom(2000);
+        break;
+
+      case 'RESPONSE_ERROR':
+        this.statusDom = 'error';
+        Log.error(payload);
+        this.error = payload;
+        this.updateDom(2000);
+        break;
+
+      default:
+        Log.error(`Unknown notification received: ${notification}`);
+        break;
     }
   },
+
 });

@@ -1,10 +1,10 @@
 # MMM-NLDepartureTimes
 
-## Update 2024
-I don´t have a MM at the moment. And I live in area with barely public transportation. I have deceided to archive this project.
-
 ## Introduction
-This module shows the departure times of public transport grouped by stops and destination of choiche. In this example you see the stops De Lanen and Leidschenveen. Leidschenveen is a LightRail hub that services lines 3,4, E, 19, 30, and N5. The lines interested are grouped to their destination, instead on line number. This way you can quickly see when a vehicle departes to your real destination fo travel.
+
+This module shows the departure times of Dutch public transport grouped by stops and destination of choice.
+
+ In this example you see the stops De Lanen and Leidschenveen. Leidschenveen is a LightRail hub that services lines 3,4, E, 19, 30, and N5. The lines interested are grouped to their destination, instead on line number. This way you can quickly see when a vehicle departes to your real destination fo travel.
 
 ![preview](./screenshot.png)
 
@@ -12,19 +12,34 @@ In the screenshot above I have two stops; Leidschenveen and De Lanen for streetc
 
 The data used by this module is from [OVapi](https://www.ovapi.nl). OVApi is a semi private project that allows usage by others.
 
-**Note:** This Module only works with Dutch Public transportation.
+An alternative source, [DRGL](https://www.drgl.nl), may be used for two reasons:
+ * it is quite complex to find out which data to obtain from OVApi;
+ * in some cases, the OVApi data is not reliable enough, as stops may be missing or wrong.
+
 
 ## Installation
-Clone the repository with
+Clone the repository in the modules directory of MagicMirror:
 
+    cd modules
     git clone https://github.com/Travelbacon/MMM-NLDepartureTimes
 
-This module depends on [Axios](https://github.com/axios/axios). You can install it by going to the module folder and execute:
+Then install this module's dependencies:
 
-    npm install
+  cd MMM-NLDepartureTimes
+  npm install
+
+## Updates
+
+To update the module:
+
+  cd MMM-NLDepartureTimes
+  git pull
+  npm install
 
 ## Configuration
-To use this module, add the follwing configuration to your `config/config.js` file. This is an example for a lightrail station in The Hague, and will be used throughout this readme.md.
+
+To use this module, add the following configuration to your `config/config.js` file.
+
 ```javascript
   modules: [
   {
@@ -32,16 +47,16 @@ To use this module, add the follwing configuration to your `config/config.js` fi
     position: "top_left",
     header: "Departure Times",
     config: {
-      maxVehics: 5,
+      maxVehicles: 5,
       updateSpeed: 10,
       locale: 'nl-NL',
       tpc: {
-        'Leidschenveen':{
+        'Leidschenveen': {
           'Den Haag': [31008721, 32009597],
           'Zoetermeer': [32009596],
           'Rotterdam': [31008722]
         },
-        'De Lanen':{
+        'De Lanen': {
           'Leidschendam': [32009591]
         }
       }
@@ -54,7 +69,7 @@ To use this module, add the follwing configuration to your `config/config.js` fi
 |`module`   | Module Name. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`position` | Postion of the module. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`header`   | Title displayed. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
-|`maxVehics` | Number of departure times displayed per destinaton.<br>**Type:** Integer **Default:** 5
+|`maxVehicles` | Number of departure times displayed per destinaton.<br>**Type:** Integer **Default:** 5
 |`updateSpeed` | refresh time in minutes. Please keep a slow refresh due non commercial property of the API server. See [Github](https://github.com/skywave/KV78Turbo-OVAPI/wiki) of OVapi for etiquette.<br>**Type:** Integer  **Default:** 10
 |`tpc` | See configure stops below.<br>**Type:** Javascript Object.
 
