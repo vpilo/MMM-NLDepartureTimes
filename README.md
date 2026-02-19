@@ -78,7 +78,8 @@ These are the generic options:
 |`module`   | Module Name. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`position` | Position of the module. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`header`   | Title displayed. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
-|`maxVehicles` | Number of departure times displayed per destination.<br />**Type:** Integer,**Default:** 4
+|`maxVehicles` | Number of departure times displayed per destination.<br />**Type:** Integer, **Default:** 4
+|`h24` | Whether to display departure times with 24-hours format (`true`), or 12-hours format with AM-PM (`false`). <br />**Type:** Boolean, **Default:** true
 |`updateSpeed` | refresh time in minutes. Please keep a slow refresh due to the non-commercial nature of the API server. See [Github](https://github.com/skywave/KV78Turbo-OVAPI/wiki) of OVapi for etiquette.<br />**Type:** Integer, **Default:** 10
 |`source` | Data source name. Supported source: `"ovapi"` and `"drgl"`. See below for more information. <br />**Default:** `"ovapi"`
 |`tpc` | Data source configuration when `source` is `"ovapi"`. See below for more information.

@@ -8,6 +8,7 @@ Module.register("MMM-NLDepartureTimes", {
   defaults: {
     updateSpeed: 15,
     maxVehicles: 4,
+    h24: true,
     source: "ovapi",
   },
 
@@ -54,7 +55,7 @@ Module.register("MMM-NLDepartureTimes", {
       case 'newTable':
         const table = document.createElement("table");
         table.id = "timeTable";
-        const timeFormat = this.config.timeFormat === 24 ? "HH:mm" : "hh:mm A";
+        const timeFormat = this.config.h24 == false ? "hh:mm A" : "HH:mm";
         for (const stopArea in this.timeTableList) {
           // Fetch the stop area.
           let row = document.createElement("tr");
