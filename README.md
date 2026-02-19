@@ -4,13 +4,13 @@
 
 This module shows the departure times of Dutch public transport grouped by stops and destination of choice.
 
- In this example you see the stops De Lanen and Leidschenveen. Leidschenveen is a LightRail hub that services lines 3,4, E, 19, 30, and N5. The lines interested are grouped to their destination, instead on line number. This way you can quickly see when a vehicle departes to your real destination fo travel.
+ In this example you see the stops De Lanen and Leidschenveen. Leidschenveen is a LightRail hub that serves lines 3, 4, E, 19, 30, and N5. The lines of interest are grouped by their destination, instead of by line number. This way you can quickly see when a vehicle departs to your real destination to travel.
 
 ![preview](./screenshot.png)
 
-In the screenshot above I have two stops; Leidschenveen and De Lanen for streetcar 19. The destination is here set to what I tink is relevant for me. For instance, line 3 goes to Den Haag Loosduinen and E goes the Den Haag Centraal. In this example it is relevant for me that they go to Den Haag. So, I grouped them in destination Den Haag. Line 19 is grouped in destination Leidschendam. In this example I only intersted in direction Leidschendam and the other destination Delft is left out this way.
+In the screenshot above I have two stops; Leidschenveen and De Lanen for streetcar 19. The destination is here set to what I think is relevant for me. For instance, line 3 goes to Den Haag Loosduinen and E goes to Den Haag Centraal. In this example it is relevant for me that they go to Den Haag. So, I grouped them in destination Den Haag. Line 19 is grouped in destination Leidschendam. In this example I am only interested in direction Leidschendam and the other destination Delft is left out this way.
 
-The data used by this module comes by default from [OVapi](https://www.ovapi.nl). OVApi is a semi private project that allows usage by the public.
+The data used by this module comes by default from [OVapi](https://www.ovapi.nl). OVApi is a semi-private project that allows usage by the public.
 
 An alternative source, [DRGL](https://www.drgl.nl), may be used for two reasons:
 
@@ -61,10 +61,10 @@ These are the generic options:
 | Option | Description
 |----------|-------------
 |`module`   | Module Name. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
-|`position` | Postion of the module. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
+|`position` | Position of the module. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`header`   | Title displayed. (See [MM Documentation](https://docs.magicmirror.builders/modules/configuration.html))
 |`maxVehicles` | Number of departure times displayed per destination.<br />**Type:** Integer,**Default:** 4
-|`updateSpeed` | refresh time in minutes. Please keep a slow refresh due non commercial property of the API server. See [Github](https://github.com/skywave/KV78Turbo-OVAPI/wiki) of OVapi for etiquette.<br />**Type:** Integer, **Default:** 10
+|`updateSpeed` | refresh time in minutes. Please keep a slow refresh due to the non-commercial nature of the API server. See [Github](https://github.com/skywave/KV78Turbo-OVAPI/wiki) of OVapi for etiquette.<br />**Type:** Integer, **Default:** 10
 |`source` | Data source name. Supported source: `"ovapi"` and `"drgl"`. See below for more information. <br />**Default:** `"ovapi"`
 |`tpc` | Data source configuration when `source` is `"ovapi"`. See below for more information.
 |`drgl` | Data source configuration when `source` is `"drgl"`. See below for more information.

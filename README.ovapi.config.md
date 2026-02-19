@@ -65,13 +65,13 @@ Now the stopnames can be converted to userstopcodes. From [OV Zoeker](https://ov
 
 ![stop code](stops.png)
 
-A more complex way is via a [KV1](http://data.ndovloket.nl/). The KV1 archive is in the folder of the operator at [data.ndovloketnl](http://data.ndovloket.nl/). In this KV1 archive you need the file USERSTOPXXX.TMI. This is plain text holding all data about a stop. For line 3 and 4 the userstopcode is `9597`.
+A more complex way is via a [KV1](http://data.ndovloket.nl/). The KV1 archive is in the folder of the operator at [data.ndovloket.nl](http://data.ndovloket.nl/). In this KV1 archive you need the file USERSTOPXXX.TMI. This is plain text holding all data about a stop. For line 3 and 4 the userstopcode is `9597`.
 
-`[RecordType]|[Version number]|[Implicit/Explicit]|[DataOwnerCode]|[UserStopCode]|[TimingPointCode]|[GetIn]|[GetOut]|[Deprecated]|[Name]|[Town]|[UserStopAreaCode]|[StopSideCode]|[RoadSideEqDataOwnerCode]|[RoadSideEqUnitNumber]|[MinimalStopTime]|[StopSideLength]|[Description]|[UserStopType]`
+Open the XML file and search for the userstopcode. In this example the following node gives a hit for userstopcode 9597.
 
 `USRSTOP|1|I|HTM|9597||TRUE|TRUE|N|Leidschenveen|Den Haag|9596|-|||0||exitDirection=No side;EnableTailTrack=F;SizeOfBay=43;BayBeforePole=38;garage=F|PASSENGER`
 
-Next step is to get the TPC. From [halte export](http://data.ndovloket.nl/haltes) we can retrieve the PassengerStopAssignmentCHB{timestamp}.xml file and ExportCHB for the trains of NS. Open the XML file and search for the userstopcode. In this example the the following node gives a hit for userstopcode 9597.
+Next step is to get the TPC. From [halte export](http://data.ndovloket.nl/haltes) we can retrieve the PassengerStopAssignmentCHB{timestamp}.xml file and ExportCHB for the trains of NS. Open the XML file and search for the userstopcode. In this example the following node gives a hit for userstopcode 9597.
 ```XML
   <quay>
     <quaycode>NL:Q:32009597</quaycode>
@@ -111,7 +111,7 @@ This compresses to
 
 ## Licenses
 
-Data from [OVApi](http://www.ovapi.nl) comes from [NDOV Loket](https://ndovloket.nl). The usage is limited to 1 producion system and 1 user. So does the use of this module.
+Data from [OVApi](http://www.ovapi.nl) comes from [NDOV Loket](https://ndovloket.nl). The usage is limited to 1 production system and 1 user. So does the use of this module.
 Because data is not from my sources, nor from OVApi, I and OVApi are not responsible for data loss, damage or (in)consistency of data.
 For more details, please see their websites.
 

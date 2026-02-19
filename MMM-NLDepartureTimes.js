@@ -56,7 +56,7 @@ Module.register("MMM-NLDepartureTimes", {
         table.id = "timeTable";
         const timeFormat = this.config.timeFormat === 24 ? "HH:mm" : "hh:mm A";
         for (const stopArea in this.timeTableList) {
-          //Fetch the Stoparea.
+          // Fetch the stop area.
           let row = document.createElement("tr");
           let lineHeader = document.createElement("th");
           lineHeader.innerHTML = stopArea;
@@ -64,7 +64,7 @@ Module.register("MMM-NLDepartureTimes", {
           lineHeader.colSpan = 3;
           row.appendChild(lineHeader);
           table.appendChild(row);
-          //Fetch direction
+          // Fetch direction
           for (const direction in this.timeTableList[stopArea]) {
             let row = document.createElement("tr");
             let lineDirection = document.createElement("td");
@@ -74,12 +74,12 @@ Module.register("MMM-NLDepartureTimes", {
             row.appendChild(lineDirection);
             table.appendChild(row);
 
-            //fetch vehicles
+            // Fetch vehicles
             let vehicleCount = 0;
             for (const vehicle of this.timeTableList[stopArea][direction]) {
               vehicleCount++;
 
-              //Create time + delay
+              // Create time + delay
               let row = document.createElement("tr");
               let vehicleTime = document.createElement("td");
               vehicleTime.innerHTML = moment(vehicle.DepTime).format(timeFormat);
@@ -93,7 +93,7 @@ Module.register("MMM-NLDepartureTimes", {
               }
               row.appendChild(vehicleTime);
 
-              //Create line number + destination
+              // Create line number + destination
               let vehicleLine = document.createElement("td");
               vehicleLine.innerHTML = vehicle.LineName;
               vehicleLine.className = "xsmall light vehicLine";
@@ -124,7 +124,7 @@ Module.register("MMM-NLDepartureTimes", {
         }
 
         wrapper.appendChild(table);
-        this.statusDom = 'Request'; //Not used in script. Nice for debugging.
+        this.statusDom = 'Request'; // Not used in script. Nice for debugging.
         break;
 
       default:

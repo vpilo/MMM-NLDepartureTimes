@@ -1,4 +1,4 @@
-//From configuration in the magic mirror.
+// From configuration in the magic mirror.
 
 const axios = require('axios');
 const cheerio = require('cheerio');
@@ -49,16 +49,16 @@ module.exports = NodeHelper.create({
       A direction A can have multilple stops.
       Best way is to look in the JSON per stop, and find the proper direction.
     */
-    //JSON has on level 1 the stop codes.
-    //The time tables from different stops must be sorted to a direction.
-    //Get the stopCode from the config and check if present in JSON.
-    //If present parse the node in the timetable.  
-    for (let confHaltGroup in stopCodeConfig) { //Find the haltgroup/area in the group
-      //Each direction has multipe physique halts with its own stopcode
+    // JSON has on level 1 the stop codes.
+    // The time tables from different stops must be sorted to a direction.
+    // Get the stop code from the config and check if present in JSON.
+    // If present parse the node in the timetable.
+    for (let confHaltGroup in stopCodeConfig) { // Find the halt group / area in the group
+      // Each direction has multiple physical halts with its own stop code
       for (let confDirection in stopCodeConfig[confHaltGroup]) {
         for (let confStopCode of stopCodeConfig[confHaltGroup][confDirection]) {
           if (confStopCode in jsonData) {
-            //Make an object of the vehicle to add in timeTable
+            // Make an object of the vehicle to add in timeTable
             for (let vehicInfo in jsonData[confStopCode]['Passes']) {
               let vehicRaw = jsonData[confStopCode]['Passes'][vehicInfo];
               const expected = new Date(vehicRaw.ExpectedDepartureTime);
@@ -71,7 +71,7 @@ module.exports = NodeHelper.create({
                 Destination: vehicRaw.DestinationName50,
                 Remarks: [],
               };
-              //Add the object in the list sorted on time.        
+              // Add the object in the list sorted on time.
               let i = 0;
               for (; i < timeTable[confHaltGroup][confDirection].length; i++) {
                 if (vehicle['DepTime'] <= timeTable[confHaltGroup][confDirection][i]['DepTime']) {
