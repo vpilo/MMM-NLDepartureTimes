@@ -2,12 +2,12 @@
 Module.register("MMM-NLDepartureTimes", {
 
   statusDom: undefined,
-  timeTableList: Object,
+  timeTableList: {},
   error: undefined,
 
   defaults: {
-    updateSpeed: 10,
-    maxVehicles: 5,
+    updateSpeed: 15,
+    maxVehicles: 4,
     source: "ovapi",
   },
 
@@ -44,12 +44,12 @@ Module.register("MMM-NLDepartureTimes", {
       case 'Loading':
         this.sendSocketNotification("REQUEST_TIMETABLE", this.config);
         wrapper.innerHTML = "Loading...";
-        return wrapper;
+        break;
 
       case 'error':
         Log.error(this.error);
         wrapper.innerHTML = this.error;
-        return wrapper;
+        break;
 
       case 'newTable':
         const table = document.createElement("table");
@@ -125,8 +125,14 @@ Module.register("MMM-NLDepartureTimes", {
 
         wrapper.appendChild(table);
         this.statusDom = 'Request'; //Not used in script. Nice for debugging.
-        return wrapper;
+        break;
+
+      default:
+        wrapper.innerHTML = "Error";
+        break;
     }
+
+    return wrapper;
   },
 
   socketNotificationReceived: function (notification, payload) {

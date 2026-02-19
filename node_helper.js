@@ -12,7 +12,12 @@ module.exports = NodeHelper.create({
   timeTable: new Object(),
 
   socketNotificationReceived: function (notification, payload) {
-    if (notification != 'REQUEST_TIMETABLE') return;
+    if (notification !== 'REQUEST_TIMETABLE') return;
+
+    if (!payload || !payload.source) {
+      this.sendSocketNotification('RESPONSE_ERROR', `No 'source' specified in config. See README.md for details.`);
+      return;
+    }
 
     switch (payload.source.toUpperCase()) {
       case 'OVAPI':
@@ -20,7 +25,7 @@ module.exports = NodeHelper.create({
           this.sendSocketNotification('RESPONSE_ERROR', `No 'tpc' section in config. See README.md for details.`);
           return;
         }
-        this.requestOvApiData(payload.ovapi);
+        this.requestOvApiData(payload.tpc);
         break;
 
       case 'DRGL':
@@ -56,10 +61,13 @@ module.exports = NodeHelper.create({
             //Make an object of the vehicle to add in timeTable
             for (let vehicInfo in jsonData[confStopCode]['Passes']) {
               let vehicRaw = jsonData[confStopCode]['Passes'][vehicInfo];
+              const expected = new Date(vehicRaw.ExpectedDepartureTime);
+              const target = new Date(vehicRaw.TargetDepartureTime).getTime();
+              let validDelay = Number.isFinite(expected.getTime()) && Number.isFinite(target);
               let vehicle = {
                 LineName: vehicRaw.LinePublicNumber,
-                DepTime: new Date(vehicRaw.ExpectedDepartureTime),
-                Delay: new Date(vehicRaw.ExpectedDepartureTime).getMinutes() - new Date(vehicRaw.TargetDepartureTime).getMinutes(),
+                DepTime: expected,
+                Delay: validDelay ? Math.round((expected.getTime() - target) / 60000) : 0,
                 Destination: vehicRaw.DestinationName50,
                 Remarks: [],
               };
@@ -145,16 +153,16 @@ module.exports = NodeHelper.create({
 
   requestOvApiData: function (stopCodeConfig) {
     let URLtpc = '';
-    this.timeTable = new Object();
-
+    this.timeTable = {};
     for (let haltGroup in stopCodeConfig) {
-      this.timeTable[haltGroup] = new Object;
+      this.timeTable[haltGroup] = {};
       for (let stopCode in stopCodeConfig[haltGroup]) {
-        this.timeTable[haltGroup][stopCode] = new Array();
+        this.timeTable[haltGroup][stopCode] = [];
         URLtpc += stopCodeConfig[haltGroup][stopCode] + ',';
       }
     }
 
+    URLtpc = URLtpc.replace(/,+$/, '');
     let requestUrl = `http://v0.ovapi.nl/tpc/${URLtpc}/departures/`;
     axios.get(requestUrl)
       .then((response) => {
@@ -167,11 +175,11 @@ module.exports = NodeHelper.create({
   },
 
   requestDeRegelingPage: function (stopCodeConfig) {
-    this.timeTable = new Object();
+    this.timeTable = {};
     const requests = [];
 
     for (let origin in stopCodeConfig) {
-      this.timeTable[origin] = new Object();
+      this.timeTable[origin] = {};
       for (let destination in stopCodeConfig[origin]) {
         let stopData = stopCodeConfig[origin][destination];
         let stop = stopData.stop;
