@@ -87,7 +87,14 @@ module.exports = NodeHelper.create({
   },
 
   parseDeRegelingPage: function (html, stopData, timeTable) {
-    if (DEBUG) Log.verbose(`DeRegeling response for ${JSON.stringify(stopData)}: ${html}`);
+    if (DEBUG) Log.debug(`DeRegeling response for ${JSON.stringify(stopData)}: ${html}`);
+
+    // There's no explicit error if you mess up the stop ID, but the page is empty with a borked title.
+    if (html.includes('"> ,  &dash; Vertrektijden')) {
+      Log.warn(`Page for stop ${stopData.stop} was empty. The stop ID is probably invalid.`);
+      this.sendSocketNotification('RESPONSE_ERROR', `Error fetching DeRegeling page for stop ${stopData.stop}: invalid stop ID?`);
+      return;
+    }
 
     const $ = cheerio.load(html);
 
@@ -126,7 +133,7 @@ module.exports = NodeHelper.create({
 
       // DRGL shows all lines departing from a stop, in all directions. Filtering is necessary.
       if (stopData.lines && !stopData.lines.includes(destination)) {
-        if (DEBUG) Log.verbose(`skipping line ${linenumber} to ${destination} as not in config lines: ${stopData.lines}`);
+        if (DEBUG) Log.debug(`skipping line ${linenumber} to ${destination} as not in config lines: ${stopData.lines}`);
         return;
       }
 
@@ -143,7 +150,7 @@ module.exports = NodeHelper.create({
       });
       vehicle.Remarks = vehicle.Remarks.join('&nbsp;');
 
-      if (DEBUG) Log.verbose(`vehicle: ${JSON.stringify(vehicle)}`);
+      if (DEBUG) Log.debug(`vehicle: ${JSON.stringify(vehicle)}`);
 
       timeTable.push(vehicle);
     });
@@ -193,7 +200,8 @@ module.exports = NodeHelper.create({
             this.timeTable[origin][destination] = stopTimeTable;
           })
           .catch((error) => {
-            Log.error(`Error parsing ${requestUrl}: ${error}`);
+            Log.error(`Error parsing ${requestUrl} for stop ${stop}: ${error}`);
+            this.sendSocketNotification('RESPONSE_ERROR', "Cannot fetch DeRegeling data for '${destination}'.");
           });
         requests.push(request);
       }

@@ -3,7 +3,7 @@ Module.register("MMM-NLDepartureTimes", {
 
   statusDom: undefined,
   timeTableList: {},
-  error: undefined,
+  errors: [],
 
   defaults: {
     updateSpeed: 15,
@@ -19,18 +19,20 @@ Module.register("MMM-NLDepartureTimes", {
   start: function () {
     Log.info(`Starting module ${this.name}`);
     this.statusDom = 'Loading';
-    this.resume();
+    this.getTimeTable();
+    this.scheduleReload();
   },
 
-  resume: function () {
+  scheduleReload: function () {
     var self = this;
     setInterval(function () {
-      self.getTable();
+      self.getTimeTable();
     },
       this.config.updateSpeed * 60_000);
   },
 
-  getTable: function () {
+  getTimeTable: function () {
+    this.errors = [];
     this.sendSocketNotification("REQUEST_TIMETABLE", this.config);
   },
 
@@ -43,13 +45,7 @@ Module.register("MMM-NLDepartureTimes", {
 
     switch (this.statusDom) {
       case 'Loading':
-        this.sendSocketNotification("REQUEST_TIMETABLE", this.config);
         wrapper.innerHTML = "Loading...";
-        break;
-
-      case 'error':
-        Log.error(this.error);
-        wrapper.innerHTML = this.error;
         break;
 
       case 'newTable':
@@ -129,9 +125,13 @@ Module.register("MMM-NLDepartureTimes", {
         break;
 
       default:
-        wrapper.innerHTML = "Error";
         break;
     }
+
+    const errorBlock = document.createElement("div");
+    errorBlock.className = "error";
+    errorBlock.innerHTML = this.errors.join("<br/>");
+    wrapper.appendChild(errorBlock);
 
     return wrapper;
   },
@@ -145,10 +145,9 @@ Module.register("MMM-NLDepartureTimes", {
         break;
 
       case 'RESPONSE_ERROR':
-        this.statusDom = 'error';
         Log.error(payload);
-        this.error = payload;
-        this.updateDom(2000);
+        this.errors.push(payload);
+        this.updateDom();
         break;
 
       default:

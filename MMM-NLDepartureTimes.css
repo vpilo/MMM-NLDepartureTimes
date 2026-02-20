@@ -27,3 +27,9 @@
     font-size: calc(var(--font-size-xsmall) * 0.75);
     line-height: 1.275;
 }
+
+.error {
+    color: red;
+    font-size: calc(var(--font-size-xsmall));
+    padding: 5px;
+}
