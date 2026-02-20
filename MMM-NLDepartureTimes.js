@@ -118,8 +118,10 @@ Module.register("MMM-NLDepartureTimes", {
                 let remarksRow = document.createElement("tr");
                 let remarkTd = document.createElement("td");
                 remarkTd.colSpan = 3;
-                remarkTd.innerHTML = `(${vehicle.Remarks})`;
-                remarkTd.className = "xxsmall light remarks";
+                let remarks = document.createElement("span");
+                remarks.innerHTML = `${vehicle.Remarks}`;
+                remarks.className = "xxsmall light remarks";
+                remarkTd.appendChild(remarks);
                 remarksRow.appendChild(remarkTd);
                 table.appendChild(remarksRow);
               }
