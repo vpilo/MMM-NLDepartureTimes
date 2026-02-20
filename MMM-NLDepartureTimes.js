@@ -71,6 +71,17 @@ Module.register("MMM-NLDepartureTimes", {
             row.appendChild(lineDirection);
             table.appendChild(row);
 
+            if (this.timeTableList[stopArea][direction].length === 0) {
+              let row = document.createElement("tr");
+              let noData = document.createElement("td");
+              noData.innerHTML = "No departures";
+              noData.colSpan = 3;
+              noData.className = "xsmall light vehicLine";
+              row.appendChild(noData);
+              table.appendChild(row);
+              continue;
+            }
+
             // Fetch vehicles
             let vehicleCount = 0;
             for (const vehicle of this.timeTableList[stopArea][direction]) {
