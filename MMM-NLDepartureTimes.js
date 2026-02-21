@@ -59,7 +59,7 @@ Module.register("MMM-NLDepartureTimes", {
           let lineHeader = document.createElement("th");
           lineHeader.innerHTML = stopArea;
           lineHeader.className = "bold";
-          lineHeader.colSpan = 3;
+          lineHeader.colSpan = 4;
           row.appendChild(lineHeader);
           table.appendChild(row);
           // Fetch direction
@@ -67,7 +67,7 @@ Module.register("MMM-NLDepartureTimes", {
             let row = document.createElement("tr");
             let lineDirection = document.createElement("td");
             lineDirection.innerHTML = direction;
-            lineDirection.colSpan = 3;
+            lineDirection.colSpan = 4;
             lineDirection.className = "small";
             row.appendChild(lineDirection);
             table.appendChild(row);
@@ -76,7 +76,7 @@ Module.register("MMM-NLDepartureTimes", {
               let row = document.createElement("tr");
               let noData = document.createElement("td");
               noData.innerHTML = "No departures";
-              noData.colSpan = 3;
+              noData.colSpan = 4;
               noData.className = "xsmall light vehicLine";
               row.appendChild(noData);
               table.appendChild(row);
@@ -88,23 +88,28 @@ Module.register("MMM-NLDepartureTimes", {
             for (const vehicle of this.timeTableList[stopArea][direction]) {
               // Create time + delay
               let row = document.createElement("tr");
+
               let vehicleTime = document.createElement("td");
               let departureTime = moment(vehicle.DepTime);
               vehicleTime.innerHTML = departureTime.format(timeFormat);
               vehicleTime.className = "xsmall light vehicDepTime";
+
+              let delay = document.createElement("td");
+              delay.className = "xsmall light delay";
               const delayMin = Number(vehicle.Delay);
               if (isFinite(delayMin) && delayMin !== 0) {
-                const delaySpan = document.createElement("span");
-                delaySpan.className = delayMin > 0 ? "timeDelay" : "timeEarlier";
-                delaySpan.innerHTML = ` ${delayMin > 0 ? "+" : ""}${delayMin}m`;
-                vehicleTime.appendChild(delaySpan);
+                delay.className += delayMin > 0 ? " timeDelay" : " timeEarlier";
+                delay.innerHTML = `${delayMin > 0 ? "+" : ""}${delayMin}`;
               }
               // Check if the stop is too far away to reach on time for this trip.
               if (vehicle.MinutesToReach > 0 && departureTime.subtract(vehicle.MinutesToReach, 'minutes').isBefore(now)) {
                 vehicleTime.className += " tooFar";
-                vehicleTime.innerHTML += " 🏃";
+                delay.className += " tooFar";
+                vehicleTime.innerHTML = "🏃" + vehicleTime.innerHTML;
               }
+
               row.appendChild(vehicleTime);
+              row.appendChild(delay);
 
               // Create line number + destination
               let vehicleLine = document.createElement("td");
@@ -122,7 +127,7 @@ Module.register("MMM-NLDepartureTimes", {
               if (vehicle.Remarks && vehicle.Remarks.length > 0) {
                 let remarksRow = document.createElement("tr");
                 let remarkTd = document.createElement("td");
-                remarkTd.colSpan = 3;
+                remarkTd.colSpan = 4;
                 let remarks = document.createElement("span");
                 remarks.innerHTML = `${vehicle.Remarks}`;
                 remarks.className = "xxsmall light remarks";

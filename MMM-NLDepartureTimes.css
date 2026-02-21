@@ -1,10 +1,16 @@
 .vehicDepTime {
-    padding: 5px 5px 0px 5px;
-    text-align: start;
+    padding: 0px;
+    width: min-content;
+}
+
+.delay {
+    padding: 0px 5px;
+    width: min-content;
+    text-align: left;
 }
 
 .vehicLine {
-    padding: 5px 2px 0px 5px;
+    padding: 0px 2px 0px 5px;
 }
 
 .vehicleDestination {
@@ -13,13 +19,12 @@
 
 .remarks {
     color: var(--color-text-dimmed);
-    padding: 5px 5px 0px 2px;
+    padding: 5px 0px 0px 2px;
     font-style: italic;
     overflow-wrap: anywhere;
     word-break: break-word;
     hyphens: auto;
-    display: flex;
-    width: 90%;
+    width: 75%;
 }
 
 .timeDelay {
