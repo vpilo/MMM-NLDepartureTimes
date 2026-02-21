@@ -55,31 +55,39 @@ module.exports = NodeHelper.create({
     // If present parse the node in the timetable.
     for (let confHaltGroup in stopCodeConfig) { // Find the halt group / area in the group
       // Each direction has multiple physical halts with its own stop code
-      for (let confDirection in stopCodeConfig[confHaltGroup]) {
-        for (let confStopCode of stopCodeConfig[confHaltGroup][confDirection]) {
-          if (confStopCode in jsonData) {
-            // Make an object of the vehicle to add in timeTable
-            for (let vehicInfo in jsonData[confStopCode]['Passes']) {
-              let vehicRaw = jsonData[confStopCode]['Passes'][vehicInfo];
-              const expected = new Date(vehicRaw.ExpectedDepartureTime);
-              const target = new Date(vehicRaw.TargetDepartureTime).getTime();
-              let validDelay = Number.isFinite(expected.getTime()) && Number.isFinite(target);
-              let vehicle = {
-                LineName: vehicRaw.LinePublicNumber,
-                DepTime: expected,
-                Delay: validDelay ? Math.round((expected.getTime() - target) / 60000) : 0,
-                Destination: vehicRaw.DestinationName50,
-                Remarks: [],
-              };
-              // Add the object in the list sorted on time.
-              let i = 0;
-              for (; i < timeTable[confHaltGroup][confDirection].length; i++) {
-                if (vehicle['DepTime'] <= timeTable[confHaltGroup][confDirection][i]['DepTime']) {
-                  break;
-                }
+      const directions = stopCodeConfig[confHaltGroup];
+      for (let confDirection in directions) {
+        // Skip non-direction keys (e.g. options for the halt group)
+        const directionCfg = directions[confDirection];
+        if (!Array.isArray(directionCfg)) {
+          continue;
+        }
+        for (let confStopCode of directionCfg) {
+          if (!confStopCode in jsonData) {
+            continue;
+          }
+          // Make an object of the vehicle to add in timeTable
+          for (let vehicInfo in jsonData[confStopCode]['Passes']) {
+            let vehicRaw = jsonData[confStopCode]['Passes'][vehicInfo];
+            const expected = new Date(vehicRaw.ExpectedDepartureTime);
+            const target = new Date(vehicRaw.TargetDepartureTime).getTime();
+            let validDelay = Number.isFinite(expected.getTime()) && Number.isFinite(target);
+            let vehicle = {
+              LineName: vehicRaw.LinePublicNumber,
+              DepTime: expected,
+              Delay: validDelay ? Math.round((expected.getTime() - target) / 60000) : 0,
+              MinutesToReach: directions && directions.minutesToReach !== undefined ? directions.minutesToReach : 0,
+              Destination: vehicRaw.DestinationName50,
+              Remarks: [],
+            };
+            // Add the object in the list sorted on time.
+            let i = 0;
+            for (; i < timeTable[confHaltGroup][confDirection].length; i++) {
+              if (vehicle['DepTime'] <= timeTable[confHaltGroup][confDirection][i]['DepTime']) {
+                break;
               }
-              timeTable[confHaltGroup][confDirection].splice(i, 0, vehicle);
             }
+            timeTable[confHaltGroup][confDirection].splice(i, 0, vehicle);
           }
         }
       }
@@ -142,6 +150,7 @@ module.exports = NodeHelper.create({
         DepTime: time,
         Delay: delay,
         Destination: destination,
+        MinutesToReach: stopData.minutesToReach !== undefined ? stopData.minutesToReach : 0,
         Remarks: []
       };
 
@@ -171,6 +180,7 @@ module.exports = NodeHelper.create({
 
     URLtpc = URLtpc.replace(/,+$/, '');
     let requestUrl = `http://v0.ovapi.nl/tpc/${URLtpc}/departures/`;
+    if (DEBUG) Log.debug(`getting: ${requestUrl}`);
     axios.get(requestUrl)
       .then((response) => {
         this.parseOvApiData(response.data, stopCodeConfig, this.timeTable);

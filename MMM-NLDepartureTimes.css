@@ -39,3 +39,7 @@
     font-size: calc(var(--font-size-xsmall));
     padding: 5px;
 }
+
+.tooFar {
+    opacity: 0.75;
+}

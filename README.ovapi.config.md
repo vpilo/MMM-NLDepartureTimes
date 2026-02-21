@@ -12,6 +12,7 @@ To use the OVApi data source, the configuration in your `config/config.js` file 
       source: "ovapi",
       tpc: {
         'Leidschenveen': {
+          minutesToReach: 8,
           'Den Haag': [31008721, 32009597],
           'Zoetermeer': [32009596],
           'Rotterdam': [31008722],
@@ -33,6 +34,7 @@ The `tpc` parameter in the settings is a Javascript Object.
 |-------|-------|------
 |Top  | Name of the group of stops | Name of choice of your hub.<br />**Type:** String.
 |2nd  | Name of the destination | Array that contains the actual TPC (stopcodes)<br />**Type:** Integer
+|2nd, `minutesToReach` parameter | Minutes to reach this stop | Optional number of minutes necessary to reach this public transport stop. If a departure is too close in time to be able to get to the stop, it will be dimmed and show 🏃.<br />**Type:** Integer.
 
 TPC is a code that identifies a stop. To get the right TPC, it will require some research. Until now I haven't found one document that contains all the data needed. If you know a quicker solution, please let me know!
 

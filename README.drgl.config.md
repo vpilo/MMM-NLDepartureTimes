@@ -21,6 +21,7 @@ To use the [DRGL.nl](http://drgl.nl) data source, the configuration in your `con
 						'All vehicles': {
               stop: "NL:S:42063501",
               lines: [], /* This shows all directions going from here. */
+              minutesToReach: 5,
             }
           },
       }
@@ -40,6 +41,7 @@ The `drgl` parameter in the settings is a Javascript Object.
 |3rd  | Destination configuration | **Type:** JS Object.
 |4th, `stop` parameter | The stop ID string | See below on how to obtain it.<br />**Type:** String.
 |4th, `lines` parameter | Line filter | Optional bus line *name* filter. Used only if not omitted and not empty: otherwise, all lines departing from this stop will be shown, in any direction.<br />Note that the elements are line *names*, not codes.<br />**Type:** Array of String.
+|4th, `minutesToReach` parameter | Minutes to reach this stop | Optional number of minutes necessary to reach this public transport stop. If a departure is too close in time to be able to get to the stop, it will be dimmed and show 🏃.<br />**Type:** Integer.
 
 ### Obtaining a stop ID
 

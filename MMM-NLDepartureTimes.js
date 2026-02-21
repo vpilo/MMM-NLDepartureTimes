@@ -42,6 +42,7 @@ Module.register("MMM-NLDepartureTimes", {
 
   getDom: function () {
     let wrapper = document.createElement("div");
+    const now = moment();
 
     switch (this.statusDom) {
       case 'Loading':
@@ -85,12 +86,11 @@ Module.register("MMM-NLDepartureTimes", {
             // Fetch vehicles
             let vehicleCount = 0;
             for (const vehicle of this.timeTableList[stopArea][direction]) {
-              vehicleCount++;
-
               // Create time + delay
               let row = document.createElement("tr");
               let vehicleTime = document.createElement("td");
-              vehicleTime.innerHTML = moment(vehicle.DepTime).format(timeFormat);
+              let departureTime = moment(vehicle.DepTime);
+              vehicleTime.innerHTML = departureTime.format(timeFormat);
               vehicleTime.className = "xsmall light vehicDepTime";
               const delayMin = Number(vehicle.Delay);
               if (isFinite(delayMin) && delayMin !== 0) {
@@ -98,6 +98,11 @@ Module.register("MMM-NLDepartureTimes", {
                 delaySpan.className = delayMin > 0 ? "timeDelay" : "timeEarlier";
                 delaySpan.innerHTML = ` ${delayMin > 0 ? "+" : ""}${delayMin}m`;
                 vehicleTime.appendChild(delaySpan);
+              }
+              // Check if the stop is too far away to reach on time for this trip.
+              if (vehicle.MinutesToReach > 0 && departureTime.subtract(vehicle.MinutesToReach, 'minutes').isBefore(now)) {
+                vehicleTime.className += " tooFar";
+                vehicleTime.innerHTML += " 🏃";
               }
               row.appendChild(vehicleTime);
 
@@ -126,6 +131,7 @@ Module.register("MMM-NLDepartureTimes", {
                 table.appendChild(remarksRow);
               }
 
+              vehicleCount++;
               if (vehicleCount === this.config.maxVehicles) {
                 break;
               }
