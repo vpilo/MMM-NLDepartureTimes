@@ -78,7 +78,7 @@ module.exports = NodeHelper.create({
               Delay: validDelay ? Math.round((expected.getTime() - target) / 60000) : 0,
               MinutesToReach: directions && directions.minutesToReach !== undefined ? directions.minutesToReach : 0,
               Destination: vehicRaw.DestinationName50,
-              Remarks: [],
+              Remarks: vehicRaw.MessageContent ? [vehicRaw.MessageContent] : [],
             };
             // Add the object in the list sorted on time.
             let i = 0;
@@ -124,6 +124,11 @@ module.exports = NodeHelper.create({
       const timeinfo = timeinfoStr.split(' ');
       const delay = timeinfo.length == 2 ? parseInt(timeinfo[1]) : 0;
 
+      var remarks = [];
+      $this.find('.notice').each(function () {
+        remarks.push($(this).html())
+      });
+
       let time = new Date();
       if (/^\d{1,2}:\d{2}$/.test(timeinfo[0])) {
         const [hh, mm] = timeinfo[0].split(':').map(Number);
@@ -151,12 +156,9 @@ module.exports = NodeHelper.create({
         Delay: delay,
         Destination: destination,
         MinutesToReach: stopData.minutesToReach !== undefined ? stopData.minutesToReach : 0,
-        Remarks: []
+        Remarks: remarks,
       };
 
-      $this.find('.notice').each(function () {
-        vehicle.Remarks.push($(this).html())
-      });
       vehicle.Remarks = vehicle.Remarks.join('&nbsp;');
 
       if (DEBUG) Log.debug(`vehicle: ${JSON.stringify(vehicle)}`);
