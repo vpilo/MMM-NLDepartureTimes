@@ -17,7 +17,7 @@ An alternative source, [DRGL](https://www.drgl.nl), may be used for two reasons:
  * it is quite complex to find out which data to obtain from OVApi;
  * in some cases, the OVApi data is not reliable enough, as stops may be missing or wrong.
 
- This MagicMirror module was originally made by [TravelBacon](https://github.com/Travelbacon/MMM-NLDepartureTimes), and I've forked it for a few reasons. First, it did not show delays. Second, a few stops I'm interested in are not correctly represented in OVApi. Third, finding TPC codes is always very complex - and every time local companies change schedules, you need to search again (thanks for nothing, QBuzz). So I added DRGL support instead.
+ This MagicMirror module was originally made by [TravelBacon](https://github.com/Travelbacon/MMM-NLDepartureTimes), but has since been archived. Thank you for your work! I've forked it for a few reasons, other than to keeping it maintained. First, it did not show delays. Second, a few stops I'm interested in are not correctly represented in OVApi. Third, finding TPC codes is always very complex - and every time local companies change schedules, you need to search all over again (thanks for nothing, QBuzz). So I added DRGL support instead.
 
 ## Installation
 
@@ -51,6 +51,7 @@ git branch -D master
 ```
 
 Then you can update the configuration by changing the `maxVehics` parameter into `maxVehicles`.
+See below to discover the new options in the source-specific configuration README files.
 
 ## Configuration
 
