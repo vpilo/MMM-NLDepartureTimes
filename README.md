@@ -24,7 +24,7 @@ An alternative source, [DRGL](https://www.drgl.nl), may be used for two reasons:
 Clone the repository in the modules directory of MagicMirror:
 
     cd modules
-    git clone https://github.com/Travelbacon/MMM-NLDepartureTimes
+    git clone https://github.com/vpilo/MMM-NLDepartureTimes.git
 
 Then install this module's dependencies:
 
