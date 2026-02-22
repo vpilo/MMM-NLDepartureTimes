@@ -63,7 +63,7 @@ module.exports = NodeHelper.create({
           continue;
         }
         for (let confStopCode of directionCfg) {
-          if (!confStopCode in jsonData) {
+          if (!(confStopCode in jsonData)) {
             continue;
           }
           // Make an object of the vehicle to add in timeTable
@@ -78,7 +78,7 @@ module.exports = NodeHelper.create({
               Delay: validDelay ? Math.round((expected.getTime() - target) / 60000) : 0,
               MinutesToReach: directions && directions.minutesToReach !== undefined ? directions.minutesToReach : 0,
               Destination: vehicRaw.DestinationName50,
-              Remarks: vehicRaw.MessageContent ? [vehicRaw.MessageContent] : [],
+              Remarks: vehicRaw.MessageContent ? [vehicRaw.MessageContent] : []
             };
             // Add the object in the list sorted on time.
             let i = 0;
@@ -126,7 +126,7 @@ module.exports = NodeHelper.create({
 
       var remarks = [];
       $this.find('.notice').each(function () {
-        remarks.push($(this).html())
+        remarks.push($(this).html());
       });
 
       let time = new Date();
@@ -156,7 +156,7 @@ module.exports = NodeHelper.create({
         Delay: delay,
         Destination: destination,
         MinutesToReach: stopData.minutesToReach !== undefined ? stopData.minutesToReach : 0,
-        Remarks: remarks,
+        Remarks: remarks
       };
 
       vehicle.Remarks = vehicle.Remarks.join('&nbsp;');
@@ -228,5 +228,5 @@ module.exports = NodeHelper.create({
         }, {});
       this.sendSocketNotification('RESPONSE_TIMETABLE', sortedTimeTable);
     });
-  },
+  }
 });

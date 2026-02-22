@@ -9,7 +9,7 @@ Module.register("MMM-NLDepartureTimes", {
     updateSpeed: 15,
     maxVehicles: 4,
     h24: true,
-    source: "ovapi",
+    source: "ovapi"
   },
 
   getScripts: function () {
@@ -43,16 +43,16 @@ Module.register("MMM-NLDepartureTimes", {
   getDom: function () {
     let wrapper = document.createElement("div");
     const now = moment();
+    const timeFormat = this.config.h24 == false ? "hh:mm A" : "HH:mm";
 
     switch (this.statusDom) {
       case 'Loading':
         wrapper.innerHTML = "Loading...";
         break;
 
-      case 'newTable':
+      case 'newTable': {
         const table = document.createElement("table");
         table.id = "timeTable";
-        const timeFormat = this.config.h24 == false ? "hh:mm A" : "HH:mm";
         for (const stopArea in this.timeTableList) {
           // Fetch the stop area.
           let row = document.createElement("tr");
@@ -147,6 +147,7 @@ Module.register("MMM-NLDepartureTimes", {
         wrapper.appendChild(table);
         this.statusDom = 'Request'; // Not used in script. Nice for debugging.
         break;
+      }
 
       default:
         break;
@@ -178,6 +179,6 @@ Module.register("MMM-NLDepartureTimes", {
         Log.error(`Unknown notification received: ${notification}`);
         break;
     }
-  },
+  }
 
 });

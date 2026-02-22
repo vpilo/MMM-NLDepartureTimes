@@ -1,27 +1,32 @@
 {
   "name": "mmm-nldeparturetimes",
-  "version": "1.0.0",
-  "description": "A Module for MagicMirror² to show departure times grouped by direction from different stops.",
+  "version": "2.0.0",
+  "description": "A Module for MagicMirror² to show Dutch public transport departure times.",
   "main": "MMM-NLDepartureTimes.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "lint": "eslint .",
+    "lint:fix": "eslint . --fix"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Travelbacon/MMM-NLDepartureTimes.git"
+    "url": "git+https://github.com/vpilo/MMM-NLDepartureTimes.git"
   },
   "keywords": [
     "MagicMirror",
     "Public Transport"
   ],
-  "author": "George Travelbacon",
+  "author": "Valerio Pilo",
   "license": "MIT",
   "bugs": {
-    "url": "https://github.com/Travelbacon/MMM-NLDepartureTimes/issues"
+    "url": "https://github.com/vpilo/MMM-NLDepartureTimes/issues"
   },
-  "homepage": "https://github.com/Travelbacon/MMM-NLDepartureTimes#readme",
+  "homepage": "https://github.com/vpilo/MMM-NLDepartureTimes#readme",
   "dependencies": {
     "axios": "^1.6.0",
     "cheerio": "^1.2.0"
+  },
+  "devDependencies": {
+    "eslint": "^10.0.1"
   }
 }
