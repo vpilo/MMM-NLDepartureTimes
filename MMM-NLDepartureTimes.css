@@ -1,25 +1,29 @@
 .vehicDepTime {
-    padding: 0px;
+    padding: 5px 5px 0px 0px;
     width: min-content;
 }
 
 .delay {
-    padding: 0px 5px;
+    padding: 5px 5px 0px 0px;
     width: min-content;
     text-align: left;
 }
 
 .vehicLine {
-    padding: 0px 2px 0px 5px;
+    padding: 5px 5px 0px 0px;
 }
 
 .vehicleDestination {
-    padding: 5px 5px 0px 2px;
+    padding: 5px 5px 0px 0px;
+}
+
+tr:has(td .remarks) {
+    line-height: 50%;
 }
 
 .remarks {
     color: var(--color-text-dimmed);
-    padding: 5px 0px 0px 2px;
+    padding: 0px;
     font-style: italic;
     overflow-wrap: anywhere;
     word-break: break-word;
@@ -36,7 +40,6 @@
 
 .xxsmall {
     font-size: calc(var(--font-size-xsmall) * 0.75);
-    line-height: 1.275;
 }
 
 .error {
